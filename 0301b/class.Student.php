@@ -14,5 +14,45 @@ class Student extends Person {
         $this->gpa = null;
     }
 
-    
+    // public function get_address() {
+    //     return $this->address;
+    // }
+
+    // public function set_address($address) {
+    //     return $this->address = $address;
+    // }
+
+    public function get_address() {
+		return $this->address;
+	}
+
+	public function get_major() {
+		return $this->major;
+	}
+
+	public function get_gpa() {
+		return $this->gpa;
+	}
+	
+	public function set_address( $address ) {
+		$this->address = $address;
+	}
+
+	public function set_major( $major ) {
+		$this->set_major = $major;
+	}
+
+	public function set_gpa( $gpa ) {
+		$this->gpa = $gpa;
+	}
+
+	public function calculate_gpa( $grades, $credits ) {
+		$this->set_gpa( $grades / $credits );
+		return $this->gpa;
+	}
+
+    public function calculate_gpa($grades, $credits) {
+        $this->set_gpa($grades / $credits);
+        return $this->gpa;
+    }
 }
