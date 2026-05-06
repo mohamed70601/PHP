@@ -4,6 +4,20 @@
     print_r( $output );
     echo '</pre>';
   }
+
+  function print_img($img) {
+	$format = '<figure>
+	<img src="%1$s" alt="%2$s">
+	<figcaption>%3$s</figcaption>
+	</figure>';
+
+	printf($format,
+		$img->url_full_size,
+		$img->description,
+		$img->title,
+	);
+  }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,6 +28,15 @@
     <body>
 		<main>
   			<h1>Recent Images</h1>
+			<?php
+			$url = 'https://pixelford.com/api2/image?qty=15';
+			$images = json_decode(file_get_contents($url));
+			$images = array_slice($images, 0, 15);
+
+			foreach($images as $img) {
+				print_img($img);
+			}
+			?>
 		</main>
 		<style>
 			body {
