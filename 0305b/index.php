@@ -1,10 +1,36 @@
 <?php
 	function check_downtime($url = null) {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		
+		$result = curl_exec($ch);
 
-	}
+		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if($code >= 200 && $code < 300) {
+			return "$url is Up!";
+		} else if ($code >= 400 || $code == 0) {
+			return "$url is DOWN";
+		}
+
+		return "It looks like $url is down, but we can't be sure.";
+ 	}
 
 	function store_url($url) {
+		setcookie('url', $url, time()+60*60*24*30);
+	}
+	function get_url() {
+		if(isset($_POST['url'])) {
+			store_url($_POST['url']);
+			return $_POST['url'];
+		} else if (isset($_COOKIE['url'])) {
+			return $_COOKIE['url'];
+		} 
+		return false;
+	}
 
+	if(get_url()) {
+		header("Refresh:" . 60*5);
 	}
 ?>
 
@@ -45,11 +71,17 @@
     </head>
     <body>
         <main>
-					<h1>Downtime Monitor</h1>
-					<form name="downtime" method="POST">
-						<input type="url" name="url" placeholder="Enter the URL you want to monitor." />
-						<input type="submit" name="submit" value="Submit" />
-				</form>
-				</main>
+			<?php
+				if(!empty(get_url())) {
+					$message = check_downtime(get_url());
+					echo '<h3 class="alert">'. $message . '</h3>';
+				}
+			?>
+			<h1>Downtime Monitor</h1>
+			<form name="downtime" method="POST">
+				<input type="url" name="url" placeholder="Enter the URL you want to monitor." />
+				<input type="submit" name="submit" value="Submit" />
+			</form>
+		</main>
     </body>
 </html>
